@@ -1,1512 +1,172 @@
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Orçamentos | Molduart Gesso</title>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-        <style>
-
-            :root {
-                --primary: #00a86b;
-                --primary-dark: #007a53;
-                --accent: #006400;
-                --light: #f8f9fa;
-                --dark: #212529;
-                --white: #ffffff;
-                --gray: #6c757d;
-                --header-gray: #495057;
-                --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                --transition: all 0.3s ease;
-                --logo-color: #ffffff;
-            }
-
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-
-            body {
-                font-family: 'Montserrat', sans-serif;
-                color: var(--dark);
-                line-height: 1.6;
-                position: relative;
-                overflow-x: hidden;
-                background-color: #f5f5f5;
-            }
-
-            /* Animated Background */
-            .bg-animation {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: -1;
-                opacity: 0.1;
-                overflow: hidden;
-            }
-
-            .bg-circle {
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(0, 168, 107, 0.1);
-                animation: float 15s infinite linear;
-            }
-
-            @keyframes float {
-                0% {
-                    transform: translateY(0) rotate(0deg);
-                }
-                100% {
-                    transform: translateY(-1000px) rotate(720deg);
-                }
-            }
-
-            header {
-                background: var(--header-gray);
-                padding: 1rem 0;
-                box-shadow: var(--shadow);
-                position: fixed;
-                width: 100%;
-                top: 0;
-                z-index: 1000;
-            }
-
-            .header-content {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 2rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .logo {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--logo-color);
-            }
-
-            .logo-icon {
-                width: 45px;
-                height: 45px;
-                position: relative;
-            }
-
-            .logo-icon svg {
-                width: 100%;
-                height: 100%;
-            }
-
-            .logo-icon svg path {
-                stroke: var(--logo-color);
-            }
-
-            .logo-text {
-                font-weight: 600;
-                letter-spacing: 1px;
-                position: relative;
-            }
-
-            .logo-text::after {
-                content: '';
-                position: absolute;
-                bottom: -5px;
-                left: 0;
-                width: 100%;
-                height: 2px;
-                background: var(--logo-color);
-                transform: scaleX(0);
-                transform-origin: right;
-                transition: transform 0.4s ease;
-            }
-
-            .logo:hover .logo-text::after {
-                transform: scaleX(1);
-                transform-origin: left;
-            }
-
-            @keyframes logoFloat {
-                0%, 100% {
-                    transform: translateY(0) rotate(0deg);
-                }
-                25% {
-                    transform: translateY(-3px) rotate(2deg);
-                }
-                50% {
-                    transform: translateY(0) rotate(0deg);
-                }
-                75% {
-                    transform: translateY(3px) rotate(-2deg);
-                }
-            }
-
-            .logo-icon {
-                animation: logoFloat 6s ease-in-out infinite;
-            }
-
-            .logo-line {
-                stroke-dasharray: 100;
-                stroke-dashoffset: 100;
-                animation: logoDraw 1.5s ease-in-out forwards;
-            }
-
-            @keyframes logoDraw {
-                to {
-                    stroke-dashoffset: 0;
-                }
-            }
-
-            .logo-line-1 {
-                animation-delay: 0.1s;
-            }
-
-            .logo-line-2 {
-                animation-delay: 0.3s;
-            }
-
-            .logo-line-3 {
-                animation-delay: 0.5s;
-            }
-
-            .logo-line-4 {
-                animation-delay: 0.7s;
-            }
-
-            .main-content {
-                max-width: 1200px;
-                margin: 100px auto 0;
-                padding: 2rem;
-                position: relative;
-                z-index: 1;
-                background-color: rgba(255, 255, 255, 0.9);
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            }
-
-            .page-title {
-                text-align: center;
-                margin-bottom: 2rem;
-                color: var(--primary-dark);
-                font-size: 2rem;
-            }
-
-            .options-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2rem;
-                margin-bottom: 3rem;
-            }
-
-            .option-card {
-                background: var(--white);
-                border-radius: 10px;
-                padding: 2rem;
-                box-shadow: var(--shadow);
-                transition: var(--transition);
-                text-align: center;
-                cursor: pointer;
-            }
-
-            .option-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            }
-
-            .option-icon {
-                font-size: 3rem;
-                color: var(--primary);
-                margin-bottom: 1rem;
-            }
-
-            .option-title {
-                font-size: 1.3rem;
-                margin-bottom: 1rem;
-                color: var(--dark);
-            }
-
-            .btn {
-                display: inline-block;
-                padding: 0.8rem 1.5rem;
-                background: var(--primary);
-                color: var(--white);
-                border: none;
-                border-radius: 5px;
-                font-size: 1rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: var(--transition);
-                text-decoration: none;
-            }
-
-            .btn:hover {
-                background: var(--primary-dark);
-            }
-
-            .btn-voltar {
-                display: inline-block;
-                padding: 0.8rem 1.5rem;
-                background: var(--gray);
-                color: var(--white);
-                border: none;
-                border-radius: 5px;
-                font-size: 1rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: var(--transition);
-                text-decoration: none;
-                margin-top: 1rem;
-                width: 100%;
-                text-align: center;
-            }
-
-            .btn-voltar:hover {
-                background: #5a6268;
-            }
-
-            .form-container {
-                background: var(--white);
-                border-radius: 10px;
-                padding: 2rem;
-                box-shadow: var(--shadow);
-                max-width: 600px;
-                margin: 0 auto;
-                display: none;
-            }
-
-            .form-title {
-                text-align: center;
-                margin-bottom: 1.5rem;
-                color: var(--primary-dark);
-            }
-
-            .form-group {
-                margin-bottom: 1.5rem;
-                position: relative;
-            }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-weight: 500;
-            }
-
-            .form-control {
-                width: 100%;
-                padding: 0.8rem;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 1rem;
-                transition: border-color 0.3s ease;
-            }
-
-            .form-control:focus {
-                border-color: var(--primary);
-                outline: none;
-            }
-
-            .form-control:invalid {
-                border-color: #ff9999;
-                animation: shake 0.5s ease-in-out;
-            }
-
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                75% { transform: translateX(5px); }
-            }
-
-            .error-message {
-                color: #ff4444;
-                font-size: 0.8rem;
-                margin-top: 0.25rem;
-                display: none;
-            }
-
-            .btn-submit {
-                width: 100%;
-                padding: 1rem;
-                background: var(--primary);
-                color: var(--white);
-                border: none;
-                border-radius: 5px;
-                font-size: 1.1rem;
-                font-weight: 600;
-                cursor: pointer;
-                margin-top: 1rem;
-            }
-
-            .modal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                z-index: 2000;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .modal-content {
-                background: var(--white);
-                border-radius: 10px;
-                padding: 2rem;
-                max-width: 500px;
-                width: 90%;
-                margin: 0 auto;
-            }
-
-            .result-table {
-                width: 100%;
-                margin: 1rem 0;
-                border-collapse: collapse;
-            }
-
-            .result-table th, .result-table td {
-                padding: 0.75rem;
-                text-align: left;
-                border-bottom: 1px solid #eee;
-            }
-
-            .result-table th {
-                background-color: var(--primary);
-                color: white;
-            }
-
-            .result-table tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-
-            .result-table tr:last-child {
-                font-weight: bold;
-                background-color: var(--primary);
-                color: white;
-            }
-
-            .btn-whatsapp {
-                background-color: #25D366;
-                color: white;
-            }
-            
-            .btn-whatsapp:hover {
-                background-color: #128C7E;
-            }
-            
-            .modal-buttons {
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                margin-top: 1rem;
-            }
-            
-            .modal-buttons .btn {
-                flex: 1;
-                min-width: 120px;
-            }
-
-            /* Galeria de Fotos */
-            .gallery-container {
-                display: none;
-                padding: 2rem;
-                background: var(--white);
-                border-radius: 10px;
-                box-shadow: var(--shadow);
-            }
-
-            .gallery-title {
-                text-align: center;
-                margin-bottom: 2rem;
-                color: var(--primary-dark);
-            }
-
-            .gallery-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
-            }
-
-            .gallery-item {
-                position: relative;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                aspect-ratio: 4/3;
-                cursor: pointer;
-            }
-
-            .gallery-item:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            }
-
-            .gallery-img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.5s ease;
-            }
-
-            .gallery-item:hover .gallery-img {
-                transform: scale(1.05);
-            }
-
-            .gallery-caption {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, 0.7);
-                color: white;
-                padding: 0.75rem;
-                transform: translateY(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .gallery-item:hover .gallery-caption {
-                transform: translateY(0);
-            }
-
-            .gallery-category {
-                font-weight: 600;
-                color: var(--primary);
-                margin-bottom: 0.5rem;
-                display: inline-block;
-            }
-
-            /* Lightbox */
-            .lightbox {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                z-index: 3000;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .lightbox-content {
-                max-width: 90%;
-                max-height: 90%;
-                position: relative;
-            }
-
-            .lightbox-img {
-                max-width: 100%;
-                max-height: 90vh;
-                border: 3px solid white;
-                border-radius: 5px;
-                display: block;
-                margin: 0 auto;
-            }
-
-            .close-lightbox {
-                position: absolute;
-                top: 20px;
-                right: 30px;
-                color: white;
-                font-size: 40px;
-                cursor: pointer;
-                z-index: 3001;
-            }
-
-            .lightbox-caption {
-                position: absolute;
-                bottom: 20px;
-                left: 0;
-                right: 0;
-                text-align: center;
-                color: white;
-                padding: 10px;
-                background: rgba(0, 0, 0, 0.7);
-            }
-
-            /* Admin */
-            .admin-badge {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: var(--primary);
-                color: white;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                z-index: 1000;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                transition: all 0.3s ease;
-            }
-
-            .admin-badge:hover {
-                transform: scale(1.1);
-                background: var(--primary-dark);
-            }
-
-            .admin-panel {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: white;
-                z-index: 4000;
-                padding: 20px;
-                overflow: auto;
-                display: none;
-            }
-
-            .admin-panel h2 {
-                color: var(--primary-dark);
-                margin-bottom: 20px;
-            }
-
-            .admin-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-
-            .admin-table th, .admin-table td {
-                padding: 12px;
-                border: 1px solid #ddd;
-                text-align: left;
-            }
-
-            .admin-table th {
-                background-color: var(--primary);
-                color: white;
-            }
-
-            .admin-table tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-
-            .close-admin {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                background: var(--gray);
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
-            @media (max-width: 768px) {
-                .main-content {
-                    padding: 1rem;
-                    margin-top: 100px;
-                }
-                
-                .options-container {
-                    grid-template-columns: 1fr;
-                }
-                
-                .modal-buttons {
-                    flex-direction: column;
-                }
-                
-                .modal-buttons .btn {
-                    width: 100%;
-                }
-
-                .gallery-grid {
-                    grid-template-columns: 1fr;
-                }
-
-                .lightbox-img {
-                    max-height: 80vh;
-                }
-
-                .admin-table {
-                    font-size: 14px;
-                }
-            }
-
-
-
-
-
-
-
-
-
-
-
-            .hero-banner {
-                width: 100%;
-                height: 400px;
-                position: relative;
-                overflow: hidden;
-                margin-bottom: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
-
-            .hero-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                filter: brightness(0.7);
-            }
-
-            .hero-content {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                text-align: center;
-                color: white;
-                width: 90%;
-                max-width: 800px;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-                animation: fadeInUp 1s ease;
-            }
-
-            .hero-subtitle {
-                font-size: 1.5rem;
-                font-weight: 400;
-                margin-bottom: 2rem;
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-                animation: fadeInUp 1s ease 0.3s forwards;
-                opacity: 0;
-            }
-
-            .hero-btn {
-                animation: fadeInUp 1s ease 0.6s forwards;
-                opacity: 0;
-            }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            @media (max-width: 768px) {
-                .hero-banner {
-                    height: 300px;
-                }
-                
-                .hero-title {
-                    font-size: 2rem;
-                }
-                
-                .hero-subtitle {
-                    font-size: 1.2rem;
-                }
-            }
-
-            @media (max-width: 480px) {
-                .hero-banner {
-                    height: 250px;
-                }
-                
-                .hero-title {
-                    font-size: 1.8rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <!-- [Manter todo o conteúdo existente até o main-content] -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamentos | Molduart Gesso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+    emailjs.init('FsT8bpRAgUImo7H0a'); // Use sua Public Key real do EmailJS
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="script.js"></script>
+</head>
+<body>
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path class="logo-line logo-line-1" d="M20,80 L20,30" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        <path class="logo-line logo-line-2" d="M20,30 L50,70" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        <path class="logo-line logo-line-3" d="M50,70 L80,30" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        <path class="logo-line logo-line-4" d="M80,30 L80,80" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
+                        <path d="M10,10 L90,10 L90,90 L10,90 Z" stroke="var(--logo-color)" stroke-width="2" fill="none" stroke-dasharray="5" opacity="0.5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Molduart</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <!-- Banner Hero -->
+        <div class="hero-banner">
+            <img src="https://imgur.com/SPe1YzE.jpg" 
+                alt="Trabalhos em gesso" 
+                class="hero-image">
+            <div class="hero-content">
+                <h1 class="hero-title">Transforme seus ambientes com gesso de qualidade</h1>
+                <p class="hero-subtitle">Molduras, forros e paredes drywall com acabamento impecável</p>
+                <a href="#options" class="btn hero-btn">Solicitar Orçamento</a>
+            </div>
+        </div>
         
-        <div class="main-content">
-            <!-- Banner Hero -->
-            <div class="hero-banner">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
-                    alt="Trabalhos em gesso" 
-                    class="hero-image">
-                <div class="hero-content">
-                    <h1 class="hero-title">Transforme seus ambientes com gesso de qualidade</h1>
-                    <p class="hero-subtitle">Molduras, forros e paredes drywall com acabamento impecável</p>
-                    <a href="#options" class="btn hero-btn">Solicitar Orçamento</a>
-                </div>
+        <h1 class="page-title" id="options">Escolha Uma Opção</h1>
+        
+        <div class="options-container">
+            <div class="option-card" data-opcao="moldura">
+                <div class="option-icon"><i class="fas fa-ruler-combined"></i></div>
+                <h3 class="option-title">Molduras</h3>
+                <button class="btn">Selecionar</button>
             </div>
             
-            <h1 class="page-title" id="options">Escolha Uma Opção</h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </style>
-    </head>
-    <body>
-        <div class="bg-animation" id="bgAnimation"></div>
-
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <path class="logo-line logo-line-1" d="M20,80 L20,30" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
-                            <path class="logo-line logo-line-2" d="M20,30 L50,70" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
-                            <path class="logo-line logo-line-3" d="M50,70 L80,30" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
-                            <path class="logo-line logo-line-4" d="M80,30 L80,80" stroke="var(--logo-color)" stroke-width="8" fill="none" stroke-linecap="round"/>
-                            <path d="M10,10 L90,10 L90,90 L10,90 Z" stroke="var(--logo-color)" stroke-width="2" fill="none" stroke-dasharray="5" opacity="0.5"/>
-                        </svg>
-                    </div>
-                    <span class="logo-text">Molduart</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="main-content">
-            
-            <div class="options-container">
-                <div class="option-card" data-opcao="moldura">
-                    <div class="option-icon"><i class="fas fa-ruler-combined"></i></div>
-                    <h3 class="option-title">Molduras</h3>
-                    <button class="btn">Selecionar</button>
-                </div>
-                
-                <div class="option-card" data-opcao="parede">
-                    <div class="option-icon"><i class="fas fa-border-style"></i></div>
-                    <h3 class="option-title">Paredes Drywall</h3>
-                    <button class="btn">Selecionar</button>
-                </div>
-                
-                <div class="option-card" data-opcao="forro">
-                    <div class="option-icon"><i class="fas fa-layer-group"></i></div>
-                    <h3 class="option-title">Forros</h3>
-                    <button class="btn">Selecionar</button>
-                </div>
-                
-                <div class="option-card" data-opcao="galeria">
-                    <div class="option-icon"><i class="fas fa-images"></i></div>
-                    <h3 class="option-title">Galeria de Fotos</h3>
-                    <button class="btn">Visualizar</button>
-                </div>
+            <div class="option-card" data-opcao="parede">
+                <div class="option-icon"><i class="fas fa-border-style"></i></div>
+                <h3 class="option-title">Paredes Drywall</h3>
+                <button class="btn">Selecionar</button>
             </div>
             
-            <div id="formulario" class="form-container">
-                <h2 class="form-title" id="form-title"></h2>
-                <form id="budget-form">
-                    <div id="inputsDinamicos"></div>
-                </form>
+            <div class="option-card" data-opcao="forro">
+                <div class="option-icon"><i class="fas fa-layer-group"></i></div>
+                <h3 class="option-title">Forros</h3>
+                <button class="btn">Selecionar</button>
             </div>
             
-            <div id="galeria" class="gallery-container">
-                <h2 class="gallery-title">Nossos Trabalhos</h2>
-                <div class="gallery-grid" id="galleryGrid">
-                    <!-- Fotos serão adicionadas via JavaScript -->
-                </div>
-                <button class="btn-voltar" id="btnVoltarGaleria">
+            <div class="option-card" data-opcao="galeria">
+                <div class="option-icon"><i class="fas fa-images"></i></div>
+                <h3 class="option-title">Galeria de Fotos</h3>
+                <button class="btn">Visualizar</button>
+            </div>
+        </div>
+        
+        <div id="formulario" class="form-container">
+            <h2 class="form-title" id="form-title"></h2>
+            <form id="budget-form">
+                <div id="inputsDinamicos"></div>
+            </form>
+        </div>
+        
+        <div id="galeria" class="gallery-container">
+            <h2 class="gallery-title">Nossos Trabalhos</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Fotos serão adicionadas via JavaScript -->
+            </div>
+            <button class="btn-voltar" id="btnVoltarGaleria">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h3>Orçamento Calculado</h3>
+            <div id="resultText"></div>
+            <div class="modal-buttons">
+                <button id="voltarModal" class="btn" style="background: var(--gray);">
                     <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <button id="exportPdf" class="btn">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button id="sendWhatsapp" class="btn btn-whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button id="closeModal" class="btn" style="background: var(--gray);">
+                    Fechar
                 </button>
             </div>
         </div>
+    </div>
 
-        <div id="resultModal" class="modal">
-            <div class="modal-content">
-                <h3>Orçamento Calculado</h3>
-                <div id="resultText"></div>
-                <div class="modal-buttons">
-                    <button id="voltarModal" class="btn" style="background: var(--gray);">
-                        <i class="fas fa-arrow-left"></i> Voltar
-                    </button>
-                    <button id="exportPdf" class="btn">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </button>
-                    <button id="sendWhatsapp" class="btn btn-whatsapp">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
-                    </button>
-                    <button id="closeModal" class="btn" style="background: var(--gray);">
-                        Fechar
-                    </button>
-                </div>
-            </div>
+
+    <div class="lightbox" id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <div class="lightbox-content">
+            <img class="lightbox-img" id="lightbox-img" src="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
         </div>
-
-        <!-- Lightbox -->
-        <div class="lightbox" id="lightbox">
-            <span class="close-lightbox">&times;</span>
-            <div class="lightbox-content">
-                <img class="lightbox-img" id="lightbox-img" src="">
-                <div class="lightbox-caption" id="lightbox-caption"></div>
-            </div>
-        </div>
-
-        <!-- Botão Admin -->
-        <div class="admin-badge" id="adminButton" title="Área do Administrador">
-            <i class="fas fa-user-shield"></i>
-        </div>
-
-        <!-- Painel Admin -->
-        <div class="admin-panel" id="adminPanel">
-            <button class="close-admin" id="closeAdmin">&times; Fechar</button>
-            <h2>Painel Administrativo</h2>
-            <p id="totalOrcamentos">Total de orçamentos: 0</p>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Tipo</th>
-                        <th>Valor</th>
-                        <th>Detalhes</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody">
-                    <!-- Orçamentos serão adicionados via JavaScript -->
-                </tbody>
-            </table>
-        </div>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-        <script>
-            // Inicialize o EmailJS (substitua com seu USER_ID)
-            emailjs.init('user_your_emailjs_userid_here');
-
-            document.addEventListener('DOMContentLoaded', function() {
-                // Configurações e elementos DOM
-                const config = {
-                    precos: {
-                        molduras: { pequeno: 150, medio: 120, grande: 90 },
-                        paredes: 85,
-                        forros: 75
-                    },
-                    fotos: [
-                        {
-                            url: 'https://imgur.com/pQbNmb9.jpg',
-                            categoria: 'Molduras',
-                        },
-
-                    ],
-                    admin: {
-                        email: "iguinho20165@gmail.com", // SUBSTITUA pelo seu email
-                        notificar: true,
-                        senha: "280401igor" // SUBSTITUA por uma senha segura
-                    }
-                };
-
-                const elements = {
-                    bgAnimation: document.getElementById('bgAnimation'),
-                    optionCards: document.querySelectorAll('.option-card'),
-                    formulario: document.getElementById('formulario'),
-                    galeria: document.getElementById('galeria'),
-                    galleryGrid: document.getElementById('galleryGrid'),
-                    modal: document.getElementById('resultModal'),
-                    closeModalBtn: document.getElementById('closeModal'),
-                    exportPdfBtn: document.getElementById('exportPdf'),
-                    sendWhatsappBtn: document.getElementById('sendWhatsapp'),
-                    voltarModalBtn: document.getElementById('voltarModal'),
-                    inputsDinamicos: document.getElementById('inputsDinamicos'),
-                    formTitle: document.getElementById('form-title'),
-                    resultText: document.getElementById('resultText'),
-                    budgetForm: document.getElementById('budget-form'),
-                    btnVoltarGaleria: document.getElementById('btnVoltarGaleria'),
-                    lightbox: document.getElementById('lightbox'),
-                    lightboxImg: document.getElementById('lightbox-img'),
-                    lightboxCaption: document.getElementById('lightbox-caption'),
-                    adminButton: document.getElementById('adminButton'),
-                    adminPanel: document.getElementById('adminPanel'),
-                    closeAdmin: document.getElementById('closeAdmin'),
-                    totalOrcamentos: document.getElementById('totalOrcamentos'),
-                    adminTableBody: document.getElementById('adminTableBody')
-                };
-
-                let state = {
-                    orcamentoAtual: null,
-                    pdfBlob: null,
-                    orcamentos: JSON.parse(localStorage.getItem('orcamentos_molduart')) || []
-                };
-
-                // Inicialização
-                function init() {
-                    createBackgroundAnimation();
-                    setupEventListeners();
-                    loadGallery();
-                    atualizarPainelAdmin();
-                }
-
-                // Animação de fundo
-                function createBackgroundAnimation() {
-                    for (let i = 0; i < 15; i++) {
-                        const circle = document.createElement('div');
-                        circle.classList.add('bg-circle');
-                        
-                        circle.style.width = `${Math.random() * 200 + 50}px`;
-                        circle.style.height = circle.style.width;
-                        circle.style.left = `${Math.random() * 100}%`;
-                        circle.style.animationDelay = `${Math.random() * 15}s`;
-                        circle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-                        
-                        elements.bgAnimation.appendChild(circle);
-                    }
-                }
-
-                // Eventos
-                function setupEventListeners() {
-                    elements.optionCards.forEach(card => {
-                        card.addEventListener('click', () => {
-                            const opcao = card.getAttribute('data-opcao');
-                            if (opcao === 'galeria') {
-                                showGallery();
-                            } else {
-                                selecionarOpcao(opcao);
-                            }
-                        });
-                    });
-
-                    elements.closeModalBtn.addEventListener('click', closeModal);
-                    elements.voltarModalBtn.addEventListener('click', voltarModal);
-                    elements.exportPdfBtn.addEventListener('click', exportToPdf);
-                    elements.sendWhatsappBtn.addEventListener('click', enviarWhatsApp);
-                    elements.btnVoltarGaleria.addEventListener('click', showOptions);
-                    
-                    // Lightbox events
-                    document.querySelector('.close-lightbox').addEventListener('click', closeLightbox);
-                    elements.lightbox.addEventListener('click', (e) => {
-                        if (e.target === elements.lightbox) {
-                            closeLightbox();
-                        }
-                    });
-                    
-                    // Admin events
-                    elements.adminButton.addEventListener('click', mostrarLoginAdmin);
-                    elements.closeAdmin.addEventListener('click', () => {
-                        elements.adminPanel.style.display = 'none';
-                    });
-
-                    document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape' && elements.lightbox.style.display === 'flex') {
-                            closeLightbox();
-                        }
-                    });
-                }
-
-                // Funções de navegação
-                function showOptions() {
-                    document.querySelector('.options-container').style.display = 'grid';
-                    elements.formulario.style.display = 'none';
-                    elements.galeria.style.display = 'none';
-                    elements.modal.style.display = 'none';
-                }
-
-                function showGallery() {
-                    document.querySelector('.options-container').style.display = 'none';
-                    elements.formulario.style.display = 'none';
-                    elements.galeria.style.display = 'block';
-                }
-
-                function hideOptions() {
-                    document.querySelector('.options-container').style.display = 'none';
-                    elements.formulario.style.display = 'block';
-                    elements.galeria.style.display = 'none';
-                }
-
-                function closeModal() {
-                    elements.modal.style.display = 'none';
-                    showOptions();
-                }
-
-                function voltarModal() {
-                    elements.modal.style.display = 'none';
-                }
-
-            
-                function loadGallery() {
-                    elements.galleryGrid.innerHTML = '';
-                    
-                    config.fotos.forEach(foto => {
-                        const item = document.createElement('div');
-                        item.className = 'gallery-item';
-                        
-                        item.innerHTML = `
-                            <img src="${foto.url}" alt="${foto.descricao}" class="gallery-img">
-                            <div class="gallery-caption">
-                                <span class="gallery-category">${foto.categoria}</span>
-                            </div>
-                        `;
-                        
-                        item.querySelector('.gallery-img').addEventListener('click', () => {
-                            openLightbox(foto.url, foto.descricao);
-                        });
-                        
-                        elements.galleryGrid.appendChild(item);
-                    });
-                }
-
-
-                function openLightbox(imgSrc, caption) {
-                    elements.lightbox.style.display = 'flex';
-                    elements.lightboxImg.src = imgSrc;
-                    elements.lightboxCaption.textContent = caption;
-                    document.body.style.overflow = 'hidden';
-                }
-
-                function closeLightbox() {
-                    elements.lightbox.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-
-                function mostrarLoginAdmin() {
-                    const senha = prompt("Digite a senha de administrador:");
-                    if (senha === config.admin.senha) {
-                        elements.adminPanel.style.display = 'block';
-                        atualizarPainelAdmin();
-                    } else {
-                        alert("Senha incorreta!");
-                    }
-                }
-
-                function atualizarPainelAdmin() {
-                    elements.totalOrcamentos.textContent = `Total de orçamentos: ${state.orcamentos.length}`;
-                    elements.adminTableBody.innerHTML = '';
-                    
-                    state.orcamentos.forEach((orcamento, index) => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${orcamento.data}</td>
-                            <td>${orcamento.tipo}</td>
-                            <td>${formatCurrency(parseFloat(orcamento.valorTotal))}</td>
-                            <td><button class="btn" onclick="verDetalhesOrcamento(${index})">Detalhes</button></td>
-                        `;
-                        elements.adminTableBody.appendChild(tr);
-                    });
-                    
-
-                    window.verDetalhesOrcamento = (index) => {
-                        const orcamento = state.orcamentos[index];
-                        let detalhes = `Tipo: ${orcamento.tipo}\nData: ${orcamento.data}\nValor: ${formatCurrency(parseFloat(orcamento.valorTotal))}\n\n`;
-                        
-                        for (const [key, value] of Object.entries(orcamento)) {
-                            if (key !== 'tipo' && key !== 'data' && key !== 'valorTotal') {
-                                detalhes += `${formatLabel(key)}: ${value}\n`;
-                            }
-                        }
-                        
-                        alert(detalhes);
-                    };
-                }
-
-
-                async function enviarNotificacaoAdmin(orcamento) {
-                    if (!config.admin.notificar) return;
-                    
-                    try {
-
-                        await emailjs.send('service_your_service_id', 'template_your_template_id', {
-                            to_email: config.admin.email,
-                            tipo: orcamento.tipo,
-                            valor: formatCurrency(parseFloat(orcamento.valorTotal)),
-                            data: orcamento.data,
-                            detalhes: JSON.stringify(orcamento, null, 2)
-                        });
-
-                        salvarOrcamentoLocal(orcamento);
-                        
-                    } catch (error) {
-                        console.error("Erro ao enviar notificação:", error);
-
-                        salvarOrcamentoLocal(orcamento);
-                    }
-                }
-
-                function salvarOrcamentoLocal(orcamento) {
-                    state.orcamentos.push(orcamento);
-                    localStorage.setItem('orcamentos_molduart', JSON.stringify(state.orcamentos));
-                    atualizarPainelAdmin();
-                }
-
-                function selecionarOpcao(opcao) {
-                    clearErrors();
-                    hideOptions();
-                    
-                    elements.inputsDinamicos.innerHTML = '';
-                    elements.formTitle.textContent = `Orçamento de ${capitalizeFirstLetter(opcao)}`;
-                    
-                    elements.inputsDinamicos.innerHTML = getFormTemplate(opcao);
-                    elements.inputsDinamicos.appendChild(createBackButton());
-                    
-                    const submitBtn = elements.inputsDinamicos.querySelector('.btn-submit');
-                    submitBtn?.addEventListener('click', () => validarFormulario() && calcularOrcamento(opcao));
-                }
-
-                function getFormTemplate(opcao) {
-                    const templates = {
-                        moldura: `
-                            <div class="form-group">
-                                <label for="area">Área Total (m²)</label>
-                                <input type="number" id="area" class="form-control" min="1" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tipoMoldura">Tipo De Moldura</label>
-                                <select id="tipoMoldura" class="form-control" required>
-                                    <option value="" selected disabled hidden>Selecione a moldura</option>
-                                    <option value="8">8 cm</option>
-                                    <option value="10">10 cm</option>
-                                    <option value="12">12 cm</option>
-                                </select>
-                                <div class="error-message"></div>
-                            </div>
-                            <button type="button" class="btn-submit">Calcular Orçamento</button>
-                        `,
-                        parede: `
-                            <div class="form-group">
-                                <label for="comprimento">Comprimento (m)</label>
-                                <input type="number" id="comprimento" class="form-control" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="altura">Altura (m)</label>
-                                <input type="number" id="altura" class="form-control" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tipoParede">Tipo de Parede</label>
-                                <select id="tipoParede" class="form-control" required>
-                                    <option value="" selected disabled hidden>Selecione o tipo</option>
-                                    <option value="40">7,5cm</option>
-                                    <option value="70">9,5cm</option>
-                                    <option value="90">11cm</option>
-                                </select>
-                                <div class="error-message"></div>
-                            </div>
-                            <button type="button" class="btn-submit">Calcular Orçamento</button>
-                        `,
-                        forro: `
-                            <div class="form-group">
-                                <label for="area">Área total (m²)</label>
-                                <input type="number" id="area" class="form-control" step="0.01" required>
-                                <div class="error-message"></div>
-                            </div>
-                            <button type="button" class="btn-submit">Calcular Orçamento</button>
-                        `
-                    };
-                    
-                    return templates[opcao] || '';
-                }
-
-                function createBackButton() {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-voltar';
-                    btn.innerHTML = '<i class="fas fa-arrow-left"></i> Voltar';
-                    btn.addEventListener('click', showOptions);
-                    return btn;
-                }
-
-                // Validação
-                function validarFormulario() {
-                    let isValid = true;
-                    clearErrors();
-                    
-                    elements.budgetForm.querySelectorAll('[required]').forEach(field => {
-                        if (!field.value.trim()) {
-                            showError(field, 'Por favor, preencha este campo');
-                            if (isValid) {
-                                field.focus();
-                                isValid = false;
-                            }
-                        }
-                    });
-                    
-                    return isValid;
-                }
-
-                function clearErrors() {
-                    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-                    document.querySelectorAll('.form-control').forEach(el => el.classList.remove('invalid'));
-                }
-
-                function showError(field, message) {
-                    const errorMsg = field.nextElementSibling?.classList.contains('error-message') 
-                        ? field.nextElementSibling 
-                        : document.createElement('div');
-                    
-                    errorMsg.className = 'error-message';
-                    errorMsg.textContent = message;
-                    field.classList.add('invalid');
-                    field.parentNode.appendChild(errorMsg);
-                }
-
-                // Cálculos
-                function calcularOrcamento(opcao) {
-                    try {
-                        const formData = getFormData(opcao);
-                        const calculo = calcularValor(opcao, formData);
-                        
-                        state.orcamentoAtual = {
-                            tipo: capitalizeFirstLetter(opcao),
-                            data: new Date().toLocaleDateString('pt-BR'),
-                            ...formData,
-                            valorTotal: calculo.total.toFixed(2)
-                        };
-                        
-                        if (formData.area) {
-                            state.orcamentoAtual.area = parseFloat(formData.area).toFixed(2);
-                        }
-                        
-                        exibirResultado(state.orcamentoAtual);
-                        generatePdf(state.orcamentoAtual);
-                        
-
-                        enviarNotificacaoAdmin(state.orcamentoAtual);
-
-                    } catch (error) {
-                        console.error('Erro ao calcular orçamento:', error);
-                        alert('Ocorreu um erro ao calcular o orçamento. Por favor, verifique os dados e tente novamente.');
-                    }
-                }
-
-                function getFormData(opcao) {
-                    const data = {};
-                    
-                    if (opcao === 'moldura') {
-                        data.area = document.getElementById('area').value;
-                        data.perfil = document.getElementById('tipoMoldura').value + ' cm';
-                    } 
-                    else if (opcao === 'parede') {
-                        data.comprimento = document.getElementById('comprimento').value;
-                        data.altura = document.getElementById('altura').value;
-                        data.tipoParede = document.getElementById('tipoParede').value + ' mm';
-                        data.area = (data.comprimento * data.altura).toFixed(2);
-                    } 
-                    else if (opcao === 'forro') {
-                        data.area = document.getElementById('area').value;
-                    }
-                    
-                    return data;
-                }
-
-                function calcularValor(opcao, data) {
-                    const result = { total: 0 };
-                    const area = parseFloat(data.area);
-                    
-                    if (opcao === 'moldura') {
-                        if (area < 20) result.total = area * config.precos.molduras.pequeno;
-                        else if (area < 50) result.total = area * config.precos.molduras.medio;
-                        else result.total = area * config.precos.molduras.grande;
-                    } 
-                    else if (opcao === 'parede') {
-                        result.total = area * config.precos.paredes;
-                    } 
-                    else if (opcao === 'forro') {
-                        result.total = area * config.precos.forros;
-                    }
-                    
-                    return result;
-                }
-
-                // Resultados
-                function exibirResultado(orcamento) {
-                    const rows = Object.entries(orcamento)
-                        .filter(([key]) => key !== 'valorTotal')
-                        .map(([key, value]) => `
-                            <tr>
-                                <td>${formatLabel(key)}</td>
-                                <td>${formatValue(key, value)}</td>
-                            </tr>
-                        `).join('');
-                    
-                    elements.resultText.innerHTML = `
-                        <table class="result-table">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows}
-                                <tr>
-                                    <td>Valor Total</td>
-                                    <td>${formatCurrency(parseFloat(orcamento.valorTotal))}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p style="margin-top: 1rem; font-size: 0.9rem;">
-                            <i class="fas fa-info-circle"></i> Este valor é estimado e pode variar após avaliação técnica.
-                        </p>
-                    `;
-                    
-                    elements.modal.style.display = 'flex';
-                }
-
-            
-                function generatePdf(orcamento) {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    
-                    // Cabeçalho
-                    doc.setFontSize(18);
-                    doc.setTextColor(0, 168, 107);
-                    doc.text('Orçamento de Gesso - Molduart', 105, 20, { align: 'center' });
-                    
-                    doc.setFontSize(12);
-                    doc.setTextColor(100);
-                    doc.text(`Emitido em: ${orcamento.data}`, 105, 30, { align: 'center' });
-                    
-                    // Conteúdo
-                    doc.setFontSize(14);
-                    doc.setTextColor(0);
-                    doc.text('Detalhes do Orçamento:', 20, 45);
-                    
-                    const data = Object.entries(orcamento)
-                        .filter(([key]) => key !== 'valorTotal')
-                        .map(([key, value]) => [formatLabel(key), formatValue(key, value)]);
-                    
-                    doc.autoTable({
-                        startY: 50,
-                        head: [['Item', 'Valor']],
-                        body: data,
-                        headStyles: { fillColor: [0, 168, 107], textColor: 255 },
-                        styles: { fontSize: 10 }
-                    });
-                    
-                    // Rodapé
-                    doc.setFontSize(14);
-                    doc.text(`Valor Total: ${formatCurrency(orcamento.valorTotal)}`, 20, doc.lastAutoTable.finalY + 15);
-                    
-                    doc.setFontSize(10);
-                    doc.setTextColor(100);
-                    doc.text('Este orçamento tem validade de 7 dias a partir da data de emissão.', 105, doc.lastAutoTable.finalY + 30, { align: 'center' });
-                    
-                    state.pdfBlob = doc.output('blob');
-                    return doc;
-                }
-
-                function exportToPdf() {
-                    if (state.orcamentoAtual) {
-                        const doc = generatePdf(state.orcamentoAtual);
-                        doc.save(`Orcamento_Molduart_${new Date().toISOString().slice(0,10)}.pdf`);
-                    }
-                }
-
-                // WhatsApp
-                function enviarWhatsApp() {
-                    if (!state.orcamentoAtual) return;
-                    
-                    const mensagem = createWhatsAppMessage(state.orcamentoAtual);
-                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
-                    
-                    if (navigator.share && state.pdfBlob) {
-                        shareWithFile(state.orcamentoAtual, mensagem);
-                    } else {
-                        window.open(whatsappUrl, '_blank');
-                    }
-                }
-
-                function createWhatsAppMessage(orcamento) {
-                    const items = Object.entries(orcamento)
-                        .filter(([key]) => key !== 'valorTotal')
-                        .map(([key, value]) => `*${formatLabel(key)}*: ${formatValue(key, value)}`)
-                        .join('\n');
-                    
-                    return `*Orçamento de ${orcamento.tipo} - Molduart*\n\n` +
-                        `${items}\n\n` +
-                        `*Valor Total*: ${formatCurrency(parseFloat(orcamento.valorTotal))}\n\n` +
-                        `Data: ${orcamento.data}\n\n` +
-                        "Este orçamento tem validade de 15 dias.";
-                }
-
-                function shareWithFile(orcamento, mensagem) {
-                    const file = new File([state.pdfBlob], `Orcamento_Molduart_${new Date().toISOString().slice(0,10)}.pdf`, {
-                        type: 'application/pdf'
-                    });
-                    
-                    navigator.share({
-                        title: `Orçamento de ${orcamento.tipo} - Molduart`,
-                        text: mensagem,
-                        files: [file]
-                    }).catch(err => {
-                        console.error('Erro ao compartilhar:', err);
-                        window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
-                    });
-                }
-
-                // Formatação
-                function formatLabel(key) {
-                    const labels = {
-                        'tipo': 'Tipo de Serviço',
-                        'data': 'Data',
-                        'area': 'Área Total (m²)',
-                        'perfil': 'Perfil',
-                        'comprimento': 'Comprimento',
-                        'altura': 'Altura',
-                        'tipoParede': 'Tipo de Parede',
-                        'iluminacao': 'Iluminação'
-                    };
-                    return labels[key] || key;
-                }
-
-                function formatValue(key, value) {
-                    if (key === 'data') return value;
-                    if (typeof value === 'number' && value % 1 !== 0) return parseFloat(value).toFixed(2);
-                    return value;
-                }
-
-                function formatCurrency(value) {
-                    return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
-                }
-
-                function capitalizeFirstLetter(string) {
-                    return string.charAt(0).toUpperCase() + string.slice(1);
-                }
+    </div>
 
     
-                init();
-            });
-        </script>
-    </body>
-    </html>
+    <div class="admin-badge" id="adminButton" title="Área do Administrador">
+        <i class="fas fa-user-shield"></i>
+    </div>
 
-    <footer style="background: #f5f5f5; padding: 20px; text-align: center;">
-        <p>© 2024 Seu Site. Todos os direitos reservados.</p>
-        <p>Contato:  (18) 99786-8832</p>
+    <!-- Painel Admin -->
+    <div class="admin-panel" id="adminPanel">
+        <button class="close-admin" id="closeAdmin">&times; Fechar</button>
+        <h2>Painel Administrativo</h2>
+        <p id="totalOrcamentos">Total de orçamentos: 0</p>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+                <!-- Orçamentos serão adicionados via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>© 2024 Molduart Gesso. Todos os direitos reservados.</p>
+        <p>Contato: (18) 99786-8832</p>
         <p>
-        <a href="/politica-de-privacidade">Política de Privacidade</a> | 
-        <a href="/termos-de-uso">Termos de Uso</a>
+            <a href="/politica-de-privacidade">Política de Privacidade</a> | 
+            <a href="/termos-de-uso">Termos de Uso</a>
         </p>
     </footer>
 
-    
     <a href="https://wa.me/5518997868832?text=Olá,%20gostaria%20de%20um%20orçamento!" 
     target="_blank" 
-    style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:10px; border-radius:50px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:9999;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="40" alt="WhatsApp">
+    class="whatsapp-float">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="40" alt="WhatsApp">
     </a>
 
+    <script src="script.js"></script>
+</body>
+</html>
